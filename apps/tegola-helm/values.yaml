@@ -1,0 +1,89 @@
+# tegola-parcels-helm:
+#   podAnnotations:
+#     vault.hashicorp.com/agent-inject: 'true'
+#     vault.hashicorp.com/role: 'tegola-parcels'
+4map-common-helm:
+  fullnameOverride: "tegola-parcels"
+  labels:
+    app.kubernetes.io/part-of: "4map"
+    app.kubernetes.io/component: "backend"
+  serviceAccount:
+    name: "tegola-parcels"
+  extraEnvVarsSecret: tegola-parcels
+  image:
+    repository: 690342705645.dkr.ecr.eu-west-1.amazonaws.com/4ma-tegola-mvt_postgis
+    
+  application:
+    container_envs:
+      SERVICE_NAME: tegola-parcels
+      SERVER_NAME: dev
+      DOMAIN: .4map.4manalytics.com
+      LOCATION_PATH: vector
+      TEGOLA_URI_PREFIX: /mvt
+      TEGOLA_MAP_NAME: parcels
+      TEGOLA_LAYER_NAME: parcels
+      TEGOLA_SQL_SELECT: SELECT ST_AsMVTGeom(st_transform(geom, 3857),!BBOX!) AS geom, ogc_fid, ogc_fid AS id, owner, derived_ownership_type AS ownership_type, address, area_sqft AS area, parcel_number AS parcel_id, use_of_land AS land_use FROM "4ma".parcels WHERE st_transform(geom,3857) && !BBOX!
+      TEGOLA_ID_FIELDNAME: ogc_fid
+      TEGOLA_MIN_ZOOM: 11
+      TEGOLA_MAX_ZOOM: 22
+      TEGOLA_LOGGER: zap
+      #PGHOST: parcels-4map.cse4pj7vc6tj.eu-west-1.rds.amazonaws.com
+      PGHOST: 4map-layers.corp.4m-a.com
+      PGPORT: 5432
+      PGDATABASE: parcels
+      PGOPTIONS: sslmode=prefer&pool_max_conns=50
+      NGINX_PORT: 8090
+
+  service:
+    type: ClusterIP
+    port: 8090
+  ingressinternal:
+    enabled: false
+  ingress:
+    enabled: false
+  ingressgrpc:
+    enabled: false
+
+  nodeSelector: {}
+
+  tolerations:
+  - key: "capacity_type"
+    operator: "Equal"
+    value: "spot"
+    effect: "NoSchedule"
+  - key: "application"
+    operator: "Equal"
+    value: "4map"
+    effect: "NoSchedule"
+
+  resources:
+    requests:
+      memory: "250Mi"
+      cpu: "1"
+    limits:
+      memory: "500Mi"
+      cpu: "2"
+
+  affinity: 
+    podAntiAffinity:
+      requiredDuringSchedulingIgnoredDuringExecution:
+      - labelSelector:
+          matchExpressions:
+          - key: app.kubernetes.io/instance
+            operator: In
+            values:
+            - tegola-parcels-helm-dev
+        topologyKey: "kubernetes.io/hostname"
+
+  livenessProbe:
+    httpGet:
+      path: /vector/mvt/capabilities
+      port: app-port
+  readinessProbe:
+    httpGet:
+      path: /vector/mvt/capabilities
+      port: app-port
+  startupProbe:
+    httpGet:
+      path: /vector/mvt/capabilities
+      port: app-port

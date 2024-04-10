@@ -1,0 +1,8 @@
+apiVersion: v2
+name: tegola-parcels-helm
+description: tegola-parcels-helm chart - 4map
+version: 1.0.0
+dependencies:
+  - name: 4map-common-helm
+    version: 0.0.26
+    repository: oci://690342705645.dkr.ecr.eu-west-1.amazonaws.com  
