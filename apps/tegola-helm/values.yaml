@@ -12,6 +12,7 @@
   extraEnvVarsSecret: tegola-parcels
   image:
     repository: 690342705645.dkr.ecr.eu-west-1.amazonaws.com/4ma-tegola-mvt_postgis
+    tag: 20230823T172501
     
   application:
     container_envs:
