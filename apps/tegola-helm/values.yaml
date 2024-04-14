@@ -34,6 +34,7 @@
       PGDATABASE: parcels
       PGOPTIONS: sslmode=prefer&pool_max_conns=50
       NGINX_PORT: 8090
+      KING: oren
 
   service:
     type: ClusterIP
