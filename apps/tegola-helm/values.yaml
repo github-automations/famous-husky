@@ -35,6 +35,7 @@
       PGOPTIONS: sslmode=prefer&pool_max_conns=50
       NGINX_PORT: 8090
       KING: oren
+      WHOISKING: OrenLevi
 
   service:
     type: ClusterIP
