@@ -25,7 +25,7 @@
       TEGOLA_LAYER_NAME: parcels
       TEGOLA_SQL_SELECT: SELECT ST_AsMVTGeom(st_transform(geom, 3857),!BBOX!) AS geom, ogc_fid, ogc_fid AS id, owner, derived_ownership_type AS ownership_type, address, area_sqft AS area, parcel_number AS parcel_id, use_of_land AS land_use FROM "4ma".parcels WHERE st_transform(geom,3857) && !BBOX!
       TEGOLA_ID_FIELDNAME: ogc_fid
-      TEGOLA_MIN_ZOOM: 11
+      TEGOLA_MIN_ZOOM: 13
       TEGOLA_MAX_ZOOM: 22
       TEGOLA_LOGGER: zap
       #PGHOST: parcels-4map.cse4pj7vc6tj.eu-west-1.rds.amazonaws.com
